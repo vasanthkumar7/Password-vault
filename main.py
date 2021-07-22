@@ -5,7 +5,9 @@ import cv2
 import numpy as np
 import face_recognition
 from cryptography.fernet import Fernet
-from PIL import ImageTk,Image  
+from PIL import ImageTk,Image
+import pyperclip as pc
+
 
 root=Tk()
 root.title("Password vault")
@@ -13,6 +15,7 @@ p1 = PhotoImage(file = 'security.png')
 root.iconphoto(False, p1)
 
 img = ImageTk.PhotoImage(Image.open("lock.png").resize((200,200)))
+img1 = ImageTk.PhotoImage(Image.open("copy.png").resize((20,20)))
 
 def list_tostring(a):
     l=""
@@ -88,6 +91,7 @@ def add_to_profile():
     global name,glbkey
     global t5,t51,t52,t53,t54,t1,t2,t3,t4,t55,t551,t552,t553,t554,t556,t557
     t54.grid_forget()
+    clear_all()
     t55.grid(row=3,column=0)
 
 
@@ -106,11 +110,15 @@ def save_to_profile():
     t55.grid_forget()
 
 whats1=None
+def copythem(msg):
+    pc.copy(msg)
+
 def viewpassword():
     global name,glbkey
     global t5,t51,t52,t53,t54,t1,t2,t3,t4,t55,t551,t552,t553,t554,t556,t557,t541,t542,t543,whats1
-    global t541,t542,t543,t544,t545,t546,t547,t548
+    global t541,t542,t543,t544,t545,t546,t547,t548,img1
     t55.grid_forget()
+    clear_all()
     i=t53.curselection()[0]
     fernet = Fernet(glbkey)
     ghs=whats1[i].split()
@@ -118,7 +126,9 @@ def viewpassword():
     decMessage = fernet.decrypt(bytes(ghs[0][2:len(ghs[0])-1],'utf-8')).decode()
     decMessage1 = fernet.decrypt(bytes(ghs[1][2:len(ghs[1])-1],'utf-8')).decode()
     decMessage2 = fernet.decrypt(bytes(ghs[2][2:len(ghs[2])-1],'utf-8')).decode()
-
+    b1=Button(t54,image=img1,command=lambda:copythem(decMessage)).grid(row=0,column=3,padx=10)
+    b1=Button(t54,image=img1,command=lambda:copythem(decMessage1)).grid(row=1,column=3,padx=10)
+    b1=Button(t54,image=img1,command=lambda:copythem(decMessage2)).grid(row=2,column=3,padx=10)
     t542.delete(0, END)
     t544.delete(0, END)
     t546.delete(0, END)
@@ -131,6 +141,8 @@ def viewpassword():
 def back_home():
     global t4,t42,t1,t2,t3,t5,t0
     t5.grid_forget()
+    clear_all()
+
     
     t1.grid(row=0,column=0,padx=10,pady=10)
     t0.grid(row=1,column=0,padx=10,pady=10)
@@ -143,13 +155,14 @@ def delete_password():
     global whats1
     global name,glbkey
     global t5,t51,t52,t53,t54,t1,t2,t3,t4,t55,t551,t552,t553,t554,t556,t557,t541,t542,t543,whats1
+    clear_all()
     t55.grid_forget()
     i=t53.curselection()[0]
     whats1=whats1[:i]+whats1[i+1:]
-    print(whats1)
+
     f=open("details/"+name+".txt","w")
     for i in whats1:
-        f.write(i+" /n")
+        f.write(i+" \n")
 
     t54.grid_forget()
     t55.grid_forget()
@@ -191,6 +204,20 @@ def check_facematch():
 name=None
 glbkey=None
 
+def clear_all():
+    global t42 ,t552,t554,t556,t542,t544,t546,t54,t55
+
+    t54.grid_forget()
+    t55.grid_forget()
+    t42.delete(0, END)
+    t542.delete(0, END)
+    t544.delete(0, END)
+    t546.delete(0, END)
+    t552.delete(0, END)
+    t554.delete(0, END)
+    t556.delete(0, END)
+
+    
 t0=Label(root,image=img)
 t0.grid(row=1,column=0,pady=10,padx=10)
 t1=Label(root,text="Password Vault",font=("arial",20))
@@ -204,12 +231,12 @@ t3.grid(row=3,column=0,padx=10,pady=10)
 
 t4=Frame(root)
 
-t41=Label(t4,text="Enter your name :")
+t41=Label(t4,text="Enter your name :",font=("arial",15))
 t41.grid(row=0,column=0,padx=10,pady=10)
-t42=Entry(t4)
-t42.grid(row=1,column=0,padx=10,pady=10)
-t43=Button(t4,text="Enter",command=save_done)
-t43.grid(row=2,column=0,padx=10,pady=10)
+t42=Entry(t4,font=("arial",15))
+t42.grid(row=0,column=1,padx=10,pady=10)
+t43=Button(t4,text="Enter",command=save_done,font=("arial",15))
+t43.grid(row=1,column=0,padx=10,pady=10,columnspan=2)
 
 t5=Frame(root)
 
@@ -217,16 +244,16 @@ t51=Label(t5,text="")
 t51.grid(row=0,column=0,padx=10,pady=10)
 
 t52=Frame(t5)
-t521=Button(t52,text="Add",command=add_to_profile)
+t521=Button(t52,text="Add",command=add_to_profile,font=("arial",15),bg="black",fg="white")
 t521.grid(row=0,column=0,padx=10,pady=10)
 
-t522=Button(t52,text="View",command=viewpassword)
+t522=Button(t52,text="View",command=viewpassword,font=("arial",15),bg="black",fg="white")
 t522.grid(row=0,column=1,padx=10,pady=10)
 
-t523=Button(t52,text="Back",command=back_home)
+t523=Button(t52,text="Back",command=back_home,font=("arial",15),bg="black",fg="white")
 t523.grid(row=0,column=2,padx=10,pady=10)
 
-t524=Button(t52,text="Delete",command=delete_password)
+t524=Button(t52,text="Delete",command=delete_password,font=("arial",15),bg="black",fg="white")
 t524.grid(row=0,column=3,padx=10,pady=10)
 
 t52.grid(row=1,column=0,pady=10)
@@ -236,33 +263,33 @@ t53.grid(row=2,column=0,padx=10,pady=10)
 
 t54=Frame(t5)
 
-t541=Label(t54,text="Link").grid(row=0,column=0)
-t542=Entry(t54)
-t542.grid(row=1,column=0)
+t541=Label(t54,text="Link: ",font=("arial",15)).grid(row=0,column=0)
+t542=Entry(t54,font=("arial",15))
+t542.grid(row=0,column=1,pady=10)
 
-t543=Label(t54,text="Username or email").grid(row=2,column=0)
-t544=Entry(t54)
-t544.grid(row=3,column=0)
+t543=Label(t54,text="Username: ",font=("arial",15)).grid(row=1,column=0)
+t544=Entry(t54,font=("arial",15))
+t544.grid(row=1,column=1,pady=10)
 
-t545=Label(t54,text="Password").grid(row=4,column=0)
-t546=Entry(t54)
-t546.grid(row=5,column=0)
+t545=Label(t54,text="Password: ",font=("arial",15)).grid(row=2,column=0)
+t546=Entry(t54,font=("arial",15))
+t546.grid(row=2,column=1,pady=10)
 
 
 t55=Frame(t5)
-t551=Label(t55,text="Link").grid(row=0,column=0)
-t552=Entry(t55)
-t552.grid(row=1,column=0)
+t551=Label(t55,text="Link: ",font=("arial",15)).grid(row=0,column=0)
+t552=Entry(t55,font=("arial",15))
+t552.grid(row=0,column=1,pady=10)
 
-t553=Label(t55,text="Username or email").grid(row=2,column=0)
-t554=Entry(t55)
-t554.grid(row=3,column=0)
+t553=Label(t55,text="Username: ",font=("arial",15)).grid(row=1,column=0)
+t554=Entry(t55,font=("arial",15))
+t554.grid(row=1,column=1,pady=10)
 
-t555=Label(t55,text="Password").grid(row=4,column=0)
-t556=Entry(t55)
-t556.grid(row=5,column=0)
+t555=Label(t55,text="Password: ",font=("arial",15)).grid(row=2,column=0)
+t556=Entry(t55,font=("arial",15))
+t556.grid(row=2,column=1,pady=10)
 
-t557=Button(t55,text="Enter",command=save_to_profile).grid(row=6,column=0)
+t557=Button(t55,text="Enter",command=save_to_profile).grid(row=3,column=0,columnspan=2)
 
 
 
