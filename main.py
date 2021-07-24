@@ -7,6 +7,7 @@ import face_recognition
 from cryptography.fernet import Fernet
 from PIL import ImageTk,Image
 import pyperclip as pc
+from tkinter import messagebox
 
 
 root=Tk()
@@ -25,6 +26,7 @@ def list_tostring(a):
 
 def save_faces():
     global t4
+    messagebox.showinfo("Password vault", "Press 's' to capture ")
     cap = cv2.VideoCapture(0)
     while True:
         img = cap.read()
@@ -41,6 +43,9 @@ def save_faces():
 
 def save_done():
     global t4,t42,t1,t2,t3,t5,glbkey,name,t0
+    if t42.get()=="":
+        messagebox.showinfo("Password vault", "Enter your name")
+        return
     known_image = face_recognition.load_image_file("test1.jpg")
     biden_encoding = face_recognition.face_encodings(known_image)[0]
     ass=list_tostring(list(biden_encoding))
@@ -101,6 +106,9 @@ def save_to_profile():
     global whats1
     fernet = Fernet(glbkey)
     f=open("details/"+name+".txt","a")
+    if t552.get()=="" or t552.get()=="" or t552.get()=="" :
+        messagebox.showerror("Password vault", "Enter the details")
+        return 
     enc1=fernet.encrypt(t552.get().encode())
     enc2=fernet.encrypt(t554.get().encode())
     enc3=fernet.encrypt(t556.get().encode())
@@ -156,10 +164,18 @@ def delete_password():
     global name,glbkey
     global t5,t51,t52,t53,t54,t1,t2,t3,t4,t55,t551,t552,t553,t554,t556,t557,t541,t542,t543,whats1
     clear_all()
+    flag=0
+    j=messagebox.askyesno("Password vault", "Do you wanna delete the details")
+    if j:
+        flag=1
+    if flag==0:
+        return
     t55.grid_forget()
     i=t53.curselection()[0]
     whats1=whats1[:i]+whats1[i+1:]
+    
 
+    
     f=open("details/"+name+".txt","w")
     for i in whats1:
         f.write(i+" \n")
@@ -170,6 +186,8 @@ def delete_password():
     
 def check_facematch():
     global t5,name
+    messagebox.showinfo("Password vault", "Press 's' to capture ")
+    flag=0
     cap = cv2.VideoCapture(0)
     while True:
         img = cap.read()
@@ -195,11 +213,19 @@ def check_facematch():
         bdg=list(map(float,decMessage.split()))
         bdg=np.array(bdg)
         unknown_image = face_recognition.load_image_file("test1.jpg")
-        unknown_encoding = face_recognition.face_encodings(unknown_image)[0]
+        try:
+            unknown_encoding = face_recognition.face_encodings(unknown_image)[0]
+        except:
+            messagebox.showerror("Password vault", "Face is not detected")
+            return 
+
         results = face_recognition.compare_faces([bdg], unknown_encoding)
         if results[0]:
             name=decMessage2
+            flag=1
             welcome_page(j[2],jkl)
+    if flag==0:
+        messagebox.showinfo("Password vault", "Your profile doesn't exist")
 
 name=None
 glbkey=None
