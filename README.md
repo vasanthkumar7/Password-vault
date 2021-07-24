@@ -1,2 +1,4 @@
 # 🛅Password-vault
-this is password vault protected with face recognition and cryptography encryption  
+password vault is an password locker protected with facial recognition and crptography encryption in this you can multiple profiles and easy to check to your passwords when you need it 
+
+
